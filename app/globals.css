@@ -3,6 +3,7 @@
   --foreground: #333333;
   --primary: #2b4e69;
   --secondary: #799aa5;
+  --tertiary: #66afe9;
 }
 
 html,
@@ -19,6 +20,14 @@ body {
   line-height: 1.42857143;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  & > main {
+    flex: 1;
+  }
 }
 
 * {
