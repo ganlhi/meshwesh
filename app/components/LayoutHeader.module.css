@@ -8,7 +8,10 @@
 
 .banner {
   background: var(--primary);
-  padding: 20px 80px;
+  padding: 20px 0;
+}
+
+.banner .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -16,5 +19,5 @@
 
 .searchbar {
   background: var(--secondary);
-  padding: 10px 80px;
+  padding: 10px 0;
 }
