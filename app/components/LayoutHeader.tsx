@@ -2,22 +2,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import banner from '@/app/images/meshwesh-banner.png';
 import { SearchInput } from '@/app/components/SearchInput';
-import styles from './LayoutHeader.module.css';
-import common from '../common.module.css';
-import cx from 'classnames';
 
 export function LayoutHeader() {
   return (
-    <header className={styles.header}>
-      <div className={styles.banner}>
-        <div className={cx(styles.container, common.container)}>
+    <header className="w-full">
+      <div className="bg-primary py-5 text-white">
+        <div className="container">
           <Link href="/">
             <Image src={banner} alt="Meshwesh" />
           </Link>
         </div>
       </div>
-      <div className={styles.searchbar}>
-        <div className={common.container}>
+      <div className="bg-secondary py-2.5">
+        <div className="container">
           <SearchInput />
         </div>
       </div>

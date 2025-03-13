@@ -1,42 +1,37 @@
-:root {
-  --background: #ffffff;
-  --foreground: #333333;
-  --primary: #2b4e69;
-  --secondary: #799aa5;
-  --tertiary: #66afe9;
+@import 'tailwindcss';
+
+@theme {
+    --color-primary: oklch(from #2b4e69 l c h);
+    --color-secondary: oklch(from #799aa5 l c h);
+    --color-tertiary: oklch(from #66afe9 l c h);
+    --font-sans: 'Helvetica Neue', Helvetica, sans-serif;
 }
 
-html,
+@layer base {
+    html {
+        @apply text-gray-800;
+    }
+}
+
+@layer components {
+    .container {
+        @apply px-4 mx-auto md:w-2xl lg:w-4xl xl:w-6xl;
+    }
+
+    .searchbox {
+        @apply h-8 rounded-sm border-[1px] border-primary bg-white px-3 py-1.5;
+
+        &:focus {
+            @apply outline-0 border-tertiary;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px oklch(from var(--color-tertiary) l c h / 60%);
+        }
+    }
+}
+
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
+    @apply h-screen flex flex-col items-stretch;
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.42857143;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-
-  & > main {
-    flex: 1;
-  }
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
+    & > main {
+        flex: 1;
+    }
 }

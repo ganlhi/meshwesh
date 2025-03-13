@@ -1,4 +1,3 @@
-import styles from './NavBlock.module.css';
 import Link from 'next/link';
 
 type NavBlockProps = {
@@ -9,9 +8,9 @@ type NavBlockProps = {
 
 export function NavBlock({ href, number, title }: NavBlockProps) {
   return (
-    <Link href={href} className={styles.navblock}>
-      <span>{number}</span>
-      <span>{title}</span>
+    <Link href={href} className="flex w-3xs flex-col gap-1 text-primary hover:text-secondary">
+      <span className="text-[5rem] leading-[1] font-[500]">{number}</span>
+      <span className="">{title}</span>
     </Link>
   );
 }
