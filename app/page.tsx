@@ -2,13 +2,16 @@ import Image from 'next/image';
 import triumphTitle from '@/app/images/triumph-title.png';
 import gameImage from '@/app/images/game-image-800.jpg';
 import { NavBlock } from '@/app/components/NavBlock';
-import prisma from '@/lib/prisma';
+import { getCategoriesCount } from '@/lib/categories';
+import { getTroopTypesCount } from '@/lib/troop-types';
+import { getArmyListsCount } from '@/lib/army-lists';
+import { getBattleCardsCount } from '@/lib/battle-cards';
 
 export default async function HomePage() {
-  const nbThematicCategories = await prisma.thematiccategories.count();
-  const nbTroopTypes = await prisma.trooptypes.count();
-  const nbArmyLists = await prisma.armylists.count();
-  const nbBattleCards = await prisma.battlecards.count();
+  const nbThematicCategories = await getCategoriesCount();
+  const nbTroopTypes = await getTroopTypesCount();
+  const nbArmyLists = await getArmyListsCount();
+  const nbBattleCards = await getBattleCardsCount();
 
   return (
     <div className="container flex flex-col gap-11 py-4">

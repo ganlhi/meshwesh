@@ -1,8 +1,8 @@
-import prisma from '@/lib/prisma';
 import Link from 'next/link';
+import { getCategories } from '@/lib/categories';
 
 export default async function CategoriesPage() {
-  const categories = await prisma.thematiccategories.findMany({ orderBy: [{ name: 'asc' }] });
+  const categories = await getCategories();
 
   return (
     <article className="container mt-4 space-y-2.5 py-4">
