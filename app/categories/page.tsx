@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { getCategories } from '@/lib/categories';
 
+export const dynamic = 'force-static';
+
 export default async function CategoriesPage() {
   const categories = await getCategories();
 
