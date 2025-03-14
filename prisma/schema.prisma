@@ -1,0 +1,263 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type AllyarmylistsDateRange {
+  id        String @map("_id") @db.ObjectId
+  endDate   Int
+  startDate Int
+}
+
+type AllyarmylistsTroopOptions {
+  id                String                                  @map("_id") @db.ObjectId
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  battleCardEntries Json?
+  core              String
+  dateRanges        AllyarmylistsTroopOptionsDateRanges[]
+  description       String
+  max               Int
+  min               Int
+  note              String
+  troopEntries      AllyarmylistsTroopOptionsTroopEntries[]
+}
+
+type AllyarmylistsTroopOptionsDateRanges {
+  id        String @map("_id") @db.ObjectId
+  endDate   Int
+  startDate Int
+}
+
+type AllyarmylistsTroopOptionsTroopEntries {
+  id               String  @map("_id") @db.ObjectId
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  dismountTypeCode Json?
+  note             String?
+  troopTypeCode    String
+}
+
+type ArmylistsAllyOptions {
+  id          String                            @map("_id") @db.ObjectId
+  allyEntries ArmylistsAllyOptionsAllyEntries[]
+  dateRange   ArmylistsAllyOptionsDateRange?
+  note        String?
+}
+
+type ArmylistsAllyOptionsAllyEntries {
+  id           String @map("_id") @db.ObjectId
+  allyArmyList String @db.ObjectId
+  name         String
+}
+
+type ArmylistsAllyOptionsDateRange {
+  id        String @map("_id") @db.ObjectId
+  endDate   Int
+  startDate Int
+}
+
+type ArmylistsBattleCardEntries {
+  id             String  @map("_id") @db.ObjectId
+  battleCardCode String
+  max            Int?
+  min            Int?
+  note           String?
+}
+
+type ArmylistsDateRanges {
+  id        String @map("_id") @db.ObjectId
+  endDate   Int
+  startDate Int
+}
+
+type ArmylistsDerivedData {
+  extendedName  String
+  listEndDate   Int
+  listStartDate Int
+}
+
+type ArmylistsHomeTopographies {
+  id     String   @map("_id") @db.ObjectId
+  note   String
+  values String[]
+}
+
+type ArmylistsInvasionRatings {
+  id    String  @map("_id") @db.ObjectId
+  note  String?
+  value Int
+}
+
+type ArmylistsManeuverRatings {
+  id    String  @map("_id") @db.ObjectId
+  note  String?
+  value Int
+}
+
+type ArmylistsTroopEntriesForGeneral {
+  id           String                                        @map("_id") @db.ObjectId
+  troopEntries ArmylistsTroopEntriesForGeneralTroopEntries[]
+}
+
+type ArmylistsTroopEntriesForGeneralTroopEntries {
+  id               String  @map("_id") @db.ObjectId
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  dismountTypeCode Json?
+  note             String?
+  troopTypeCode    String
+}
+
+type ArmylistsTroopOptions {
+  id                String                                   @map("_id") @db.ObjectId
+  battleCardEntries ArmylistsTroopOptionsBattleCardEntries[]
+  core              String
+  dateRanges        ArmylistsTroopOptionsDateRanges[]
+  description       String
+  max               Int
+  min               Int
+  note              String
+  troopEntries      ArmylistsTroopOptionsTroopEntries[]
+}
+
+type ArmylistsTroopOptionsBattleCardEntries {
+  id             String  @map("_id") @db.ObjectId
+  battleCardCode String
+  max            Int?
+  min            Int?
+  note           String?
+}
+
+type ArmylistsTroopOptionsDateRanges {
+  id        String @map("_id") @db.ObjectId
+  endDate   Int
+  startDate Int
+}
+
+type ArmylistsTroopOptionsTroopEntries {
+  id               String  @map("_id") @db.ObjectId
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  dismountTypeCode Json?
+  note             String?
+  troopTypeCode    String
+}
+
+type TrooptypesCombatFactors {
+  closeCombat  TrooptypesCombatFactorsCloseCombat
+  rangedCombat TrooptypesCombatFactorsRangedCombat
+}
+
+type TrooptypesCombatFactorsCloseCombat {
+  vsFoot    Int
+  vsMounted Int
+}
+
+type TrooptypesCombatFactorsRangedCombat {
+  shooting Int
+  shotAt   Int
+}
+
+model allyarmylists {
+  id                 String                      @id @default(auto()) @map("_id") @db.ObjectId
+  v                  Int                         @map("__v")
+  armyListId         String?                     @db.ObjectId
+  dateRange          AllyarmylistsDateRange?
+  internalContingent Boolean
+  listId             Float
+  name               String
+  sublistId          String
+  troopOptions       AllyarmylistsTroopOptions[]
+}
+
+model armylistidmaps {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  v          Int    @map("__v")
+  databaseId String
+  listId     String
+  sublistId  String
+}
+
+model armylists {
+  id                          String                            @id @default(auto()) @map("_id") @db.ObjectId
+  v                           Int                               @map("__v")
+  allyOptions                 ArmylistsAllyOptions[]
+  battleCardEntries           ArmylistsBattleCardEntries[]
+  dateRanges                  ArmylistsDateRanges[]
+  derivedData                 ArmylistsDerivedData
+  homeTopographies            ArmylistsHomeTopographies[]
+  invasionRatings             ArmylistsInvasionRatings[]
+  keywords                    String[]
+  listId                      Float
+  maneuverRatings             ArmylistsManeuverRatings[]
+  name                        String
+  showTroopOptionDescriptions Boolean
+  sortId                      Float
+  status                      String
+  sublistId                   String
+  troopEntriesForGeneral      ArmylistsTroopEntriesForGeneral[]
+  troopOptions                ArmylistsTroopOptions[]
+}
+
+model battlecards {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int     @map("__v")
+  category      String
+  displayName   String
+  importName    String
+  listName      String
+  mdText        String
+  permanentCode String  @unique(map: "permanentCode_1")
+  showInList    Boolean
+}
+
+model enemyxrefs {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int    @map("__v")
+  armyList1 String @db.ObjectId
+  armyList2 String @db.ObjectId
+}
+
+model grandarmylists {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  v      Int    @map("__v")
+  listId Int
+  name   String @unique(map: "name_1")
+}
+
+model thematiccategories {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  v    Int    @map("__v")
+  name String @unique(map: "name_1")
+}
+
+model thematiccategorytoarmylistxrefs {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  v                Int    @map("__v")
+  armyList         String @db.ObjectId
+  thematicCategory String @db.ObjectId
+}
+
+model trooptypes {
+  id            String                  @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int                     @map("__v")
+  category      String
+  combatFactors TrooptypesCombatFactors
+  cost          Int
+  description   String
+  displayCode   String
+  displayName   String
+  importName    String
+  order         String
+  permanentCode String                  @unique(map: "permanentCode_1")
+}
+
+model users {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int    @map("__v")
+  emailAddress String @unique(map: "emailAddress_1")
+  passwordHash String
+  role         String
+  salt         String
+}
