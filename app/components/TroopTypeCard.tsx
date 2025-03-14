@@ -2,6 +2,7 @@ import { TroopType } from '@/lib/troop-types';
 
 import * as Images from '@/app/images/troop-types';
 import Image, { StaticImageData } from 'next/image';
+import { ImageModal } from '@/app/components/ImageModal';
 
 const IMAGE_MAPPING: Record<string, StaticImageData> = {
   ARC: Images.Archers,
@@ -33,6 +34,7 @@ const IMAGE_MAPPING: Record<string, StaticImageData> = {
 };
 
 export function TroopTypeCard({ troopType }: { troopType: TroopType }) {
+  const img = IMAGE_MAPPING[troopType.permanentCode] ?? Images.NoImage;
   return (
     <div className="grid grid-cols-[1fr_max-content] grid-rows-2 gap-3">
       <header>
@@ -40,11 +42,9 @@ export function TroopTypeCard({ troopType }: { troopType: TroopType }) {
         <p className="text-2xl">{troopType.cost} Points</p>
         <p className="text-2xl">{troopType.order} Order</p>
       </header>
-      <Image
-        src={IMAGE_MAPPING[troopType.permanentCode] ?? Images.NoImage}
-        alt={troopType.permanentCode}
-        height={175}
-      />
+      <ImageModal image={img} altText={troopType.displayName}>
+        <Image src={img} alt={troopType.displayName} height={175} />
+      </ImageModal>
       <p className="col-span-2 text-sm">{troopType.description}</p>
     </div>
   );
