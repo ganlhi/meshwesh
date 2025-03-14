@@ -11,13 +11,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
   const { category, lists } = data;
 
   return (
-    <article className="container mt-4 space-y-2.5 py-4">
+    <article className="container mt-4 py-4">
       <h1>{category.name}</h1>
       <h2>Army Lists</h2>
-      <ul>
+      <ul className="space-y-1.5">
         {lists.map((list) => (
-          <li key={list.id}>
-            <Link href={`/categories/${list.id}`}>{list.name}</Link>
+          <li key={list.id} className="text-xl">
+            <Link href={`/army-lists/${list.id}`}>{list.name}</Link>
           </li>
         ))}
       </ul>
