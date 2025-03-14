@@ -4,12 +4,46 @@
     --color-primary: oklch(from #2b4e69 l c h);
     --color-secondary: oklch(from #799aa5 l c h);
     --color-tertiary: oklch(from #66afe9 l c h);
+    --color-link: oklch(from #337ab7 l c h);
+    --color-link-hover: oklch(from #23527c l c h);
     --font-sans: 'Helvetica Neue', Helvetica, sans-serif;
 }
 
 @layer base {
+    *{
+        @apply box-border;
+    }
+
     html {
         @apply text-gray-800;
+    }
+
+    h1, h2, h3 {
+        @apply font-[500] leading-[1.1] mt-5 mb-2.5;
+    }
+
+    h1 {
+        @apply text-4xl;
+    }
+
+    h2 {
+        @apply text-3xl;
+    }
+
+    h3 {
+        @apply text-2xl;
+    }
+
+    h4 {
+        @apply text-xl;
+    }
+
+    h5 {
+        @apply text-lg;
+    }
+
+    a {
+        @apply text-link hover:text-link-hover hover:underline;
     }
 }
 
