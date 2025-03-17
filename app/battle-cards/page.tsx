@@ -31,6 +31,7 @@ export default async function BattleCardsPage() {
           src={SampleBattleCard}
           alt="Sample battle card"
           className="hidden md:col-span-5 md:block lg:col-span-4"
+          priority
         />
       </div>
     </article>

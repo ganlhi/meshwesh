@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@headlessui/react": "^2.2.0",
+    "@radix-ui/react-dialog": "^1.1.6",
     "@tailwindcss/postcss": "^4.0.13",
     "@types/node": "^20",
     "@types/react": "^19",
