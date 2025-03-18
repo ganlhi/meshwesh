@@ -2,8 +2,6 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getCategoryWithLists } from '@/lib/categories';
 
-export const dynamic = 'force-static';
-
 export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 

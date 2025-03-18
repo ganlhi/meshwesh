@@ -9,5 +9,8 @@ export function getBattleCards() {
 }
 
 export function getBattleCard(id: string) {
-  return prisma.battlecards.findUnique({ where: { id: id } });
+  return prisma.battlecards.findUnique({ where: { id: id } }).catch((e) => {
+    console.error(e);
+    return undefined;
+  });
 }

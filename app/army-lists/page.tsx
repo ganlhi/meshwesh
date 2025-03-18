@@ -1,8 +1,6 @@
 import { getArmyListsSummaries } from '@/lib/army-lists';
 import { ArmyListsTable } from '@/app/components/ArmyListsTable';
 
-export const dynamic = 'force-static';
-
 export default async function ArmyListsPage() {
   const armyLists = await getArmyListsSummaries();
 

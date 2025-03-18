@@ -3,8 +3,6 @@ import Image from 'next/image';
 import { getBattleCards } from '@/lib/battle-cards';
 import Link from 'next/link';
 
-export const dynamic = 'force-static';
-
 export default async function BattleCardsPage() {
   const battleCards = await getBattleCards();
 

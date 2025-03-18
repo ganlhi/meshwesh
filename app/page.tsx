@@ -7,8 +7,6 @@ import { getTroopTypesCount } from '@/lib/troop-types';
 import { getArmyListsCount } from '@/lib/army-lists';
 import { getBattleCardsCount } from '@/lib/battle-cards';
 
-export const dynamic = 'force-static';
-
 export default async function HomePage() {
   const nbThematicCategories = await getCategoriesCount();
   const nbTroopTypes = await getTroopTypesCount();
