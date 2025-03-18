@@ -1,7 +1,4 @@
 import prisma from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
-
-export type BattleCard = Prisma.$battlecardsPayload['scalars'];
 
 export function getBattleCardsCount() {
   return prisma.battlecards.count();

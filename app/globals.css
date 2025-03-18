@@ -53,7 +53,7 @@
     }
 
     .searchbox {
-        @apply h-8 rounded-sm border-[1px] border-primary bg-white px-3 py-1.5;
+        @apply h-8 rounded-sm border border-primary bg-white px-3 py-1.5;
 
         &:focus {
             @apply outline-0 border-tertiary;

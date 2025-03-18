@@ -32,7 +32,7 @@ export default async function HomePage() {
       <nav className="flex flex-col gap-4 md:flex-row [&>*]:flex-1">
         <NavBlock href="/categories" number={nbThematicCategories} title="Thematic Categories" />
         <NavBlock href="/troop-types" number={nbTroopTypes} title="Troop Types" />
-        <NavBlock href="/lists" number={nbArmyLists} title="Army Lists" />
+        <NavBlock href="/army-lists" number={nbArmyLists} title="Army Lists" />
         <NavBlock href="/battle-cards" number={nbBattleCards} title="Battle Cards" />
       </nav>
     </div>
