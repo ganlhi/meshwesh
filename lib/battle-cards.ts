@@ -14,3 +14,16 @@ export function getBattleCard(id: string) {
     return undefined;
   });
 }
+
+export function getBattleCardByCode(code: string) {
+  return prisma.battlecards
+    .findUnique({
+      where: {
+        permanentCode: code,
+      },
+    })
+    .catch((e) => {
+      console.error(e);
+      return undefined;
+    });
+}

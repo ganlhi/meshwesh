@@ -32,3 +32,11 @@ export async function getTroopTypesByCategory() {
     {},
   );
 }
+
+export function getTroopTypesByCodes(codes: string[]) {
+  return prisma.trooptypes.findMany({
+    where: {
+      permanentCode: { in: codes },
+    },
+  });
+}

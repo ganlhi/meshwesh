@@ -18,3 +18,10 @@ export async function getArmyListsSummaries(): Promise<ArmyListSummary[]> {
     derivedData,
   }));
 }
+
+export async function getArmyList(id: string) {
+  return prisma.armylists.findUnique({ where: { id: id } }).catch((e) => {
+    console.error(e);
+    return undefined;
+  });
+}
