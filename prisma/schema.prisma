@@ -7,59 +7,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-type AllyarmylistsDateRange {
-  id        String @map("_id") @db.ObjectId
-  endDate   Int
-  startDate Int
-}
-
-type AllyarmylistsTroopOptions {
-  id                String                                  @map("_id") @db.ObjectId
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  battleCardEntries Json?
+type TroopOptions {
+  id                String              @map("_id") @db.ObjectId
+  battleCardEntries BattleCardEntries[]
   core              String
-  dateRanges        AllyarmylistsTroopOptionsDateRanges[]
+  dateRanges        DateRanges[]
   description       String
   max               Int
   min               Int
   note              String
-  troopEntries      AllyarmylistsTroopOptionsTroopEntries[]
+  troopEntries      TroopEntry[]
 }
 
-type AllyarmylistsTroopOptionsDateRanges {
+type DateRanges {
   id        String @map("_id") @db.ObjectId
   endDate   Int
   startDate Int
 }
 
-type AllyarmylistsTroopOptionsTroopEntries {
-  id               String  @map("_id") @db.ObjectId
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  dismountTypeCode Json?
-  note             String?
-  troopTypeCode    String
-}
-
-type ArmylistsAllyOptions {
-  id          String                            @map("_id") @db.ObjectId
-  allyEntries ArmylistsAllyOptionsAllyEntries[]
-  dateRange   ArmylistsAllyOptionsDateRange?
+type AllyOptions {
+  id          String        @map("_id") @db.ObjectId
+  allyEntries AllyEntries[]
+  dateRange   DateRange?
   note        String?
 }
 
-type ArmylistsAllyOptionsAllyEntries {
+type AllyEntries {
   id           String @map("_id") @db.ObjectId
   allyArmyList String @db.ObjectId
   name         String
 }
 
-type ArmylistsAllyOptionsDateRange {
+type DateRange {
   id        String @map("_id") @db.ObjectId
   endDate   Int
   startDate Int
 }
 
-type ArmylistsBattleCardEntries {
+type BattleCardEntries {
   id             String  @map("_id") @db.ObjectId
   battleCardCode String
   max            Int?
@@ -67,79 +52,38 @@ type ArmylistsBattleCardEntries {
   note           String?
 }
 
-type ArmylistsDateRanges {
-  id        String @map("_id") @db.ObjectId
-  endDate   Int
-  startDate Int
-}
-
-type ArmylistsDerivedData {
+type DerivedData {
   extendedName  String
   listEndDate   Int
   listStartDate Int
 }
 
-type ArmylistsHomeTopographies {
+type HomeTopographies {
   id     String   @map("_id") @db.ObjectId
   note   String
   values String[]
 }
 
-type ArmylistsInvasionRatings {
+type InvasionRatings {
   id    String  @map("_id") @db.ObjectId
   note  String?
   value Int
 }
 
-type ArmylistsManeuverRatings {
+type ManeuverRatings {
   id    String  @map("_id") @db.ObjectId
   note  String?
   value Int
 }
 
-type ArmylistsTroopEntriesForGeneral {
-  id           String                                        @map("_id") @db.ObjectId
-  troopEntries ArmylistsTroopEntriesForGeneralTroopEntries[]
+type TroopEntriesForGeneral {
+  id           String       @map("_id") @db.ObjectId
+  troopEntries TroopEntry[]
 }
 
-type ArmylistsTroopEntriesForGeneralTroopEntries {
+type TroopEntry {
   id               String  @map("_id") @db.ObjectId
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  dismountTypeCode Json?
-  note             String?
-  troopTypeCode    String
-}
-
-type ArmylistsTroopOptions {
-  id                String                                   @map("_id") @db.ObjectId
-  battleCardEntries ArmylistsTroopOptionsBattleCardEntries[]
-  core              String
-  dateRanges        ArmylistsTroopOptionsDateRanges[]
-  description       String
-  max               Int
-  min               Int
-  note              String
-  troopEntries      ArmylistsTroopOptionsTroopEntries[]
-}
-
-type ArmylistsTroopOptionsBattleCardEntries {
-  id             String  @map("_id") @db.ObjectId
-  battleCardCode String
-  max            Int?
-  min            Int?
-  note           String?
-}
-
-type ArmylistsTroopOptionsDateRanges {
-  id        String @map("_id") @db.ObjectId
-  endDate   Int
-  startDate Int
-}
-
-type ArmylistsTroopOptionsTroopEntries {
-  id               String  @map("_id") @db.ObjectId
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  dismountTypeCode Json?
+  dismountTypeCode String?
   note             String?
   troopTypeCode    String
 }
@@ -160,49 +104,45 @@ type TrooptypesCombatFactorsRangedCombat {
 }
 
 model allyarmylists {
-  id                 String                      @id @default(auto()) @map("_id") @db.ObjectId
-  v                  Int                         @map("__v")
-  armyListId         String?                     @db.ObjectId
-  dateRange          AllyarmylistsDateRange?
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  armyListId         String?        @db.ObjectId
+  dateRange          DateRange?
   internalContingent Boolean
   listId             Float
   name               String
   sublistId          String
-  troopOptions       AllyarmylistsTroopOptions[]
+  troopOptions       TroopOptions[]
 }
 
 model armylistidmaps {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
-  v          Int    @map("__v")
   databaseId String
   listId     String
   sublistId  String
 }
 
 model armylists {
-  id                          String                            @id @default(auto()) @map("_id") @db.ObjectId
-  v                           Int                               @map("__v")
-  allyOptions                 ArmylistsAllyOptions[]
-  battleCardEntries           ArmylistsBattleCardEntries[]
-  dateRanges                  ArmylistsDateRanges[]
-  derivedData                 ArmylistsDerivedData
-  homeTopographies            ArmylistsHomeTopographies[]
-  invasionRatings             ArmylistsInvasionRatings[]
+  id                          String                   @id @default(auto()) @map("_id") @db.ObjectId
+  allyOptions                 AllyOptions[]
+  battleCardEntries           BattleCardEntries[]
+  dateRanges                  DateRanges[]
+  derivedData                 DerivedData
+  homeTopographies            HomeTopographies[]
+  invasionRatings             InvasionRatings[]
   keywords                    String[]
   listId                      Float
-  maneuverRatings             ArmylistsManeuverRatings[]
+  maneuverRatings             ManeuverRatings[]
   name                        String
   showTroopOptionDescriptions Boolean
   sortId                      Float
   status                      String
   sublistId                   String
-  troopEntriesForGeneral      ArmylistsTroopEntriesForGeneral[]
-  troopOptions                ArmylistsTroopOptions[]
+  troopEntriesForGeneral      TroopEntriesForGeneral[]
+  troopOptions                TroopOptions[]
 }
 
 model battlecards {
   id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int     @map("__v")
   category      String
   displayName   String
   importName    String
@@ -214,34 +154,23 @@ model battlecards {
 
 model enemyxrefs {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int    @map("__v")
   armyList1 String @db.ObjectId
   armyList2 String @db.ObjectId
 }
 
-model grandarmylists {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  v      Int    @map("__v")
-  listId Int
-  name   String @unique(map: "name_1")
-}
-
 model thematiccategories {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
-  v    Int    @map("__v")
   name String @unique(map: "name_1")
 }
 
 model thematiccategorytoarmylistxrefs {
   id               String @id @default(auto()) @map("_id") @db.ObjectId
-  v                Int    @map("__v")
   armyList         String @db.ObjectId
   thematicCategory String @db.ObjectId
 }
 
 model trooptypes {
   id            String                  @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int                     @map("__v")
   category      String
   combatFactors TrooptypesCombatFactors
   cost          Int
@@ -255,7 +184,6 @@ model trooptypes {
 
 model users {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int    @map("__v")
   emailAddress String @unique(map: "emailAddress_1")
   passwordHash String
   role         String
