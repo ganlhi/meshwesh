@@ -13,7 +13,7 @@ export default async function BattleCardModalPage({
   const { id } = await params;
   const battleCard = await getBattleCard(id);
   return battleCard ? (
-    <NavModal title={battleCard.displayName}>
+    <NavModal title={battleCard.displayName} backUrl="/battle-cards">
       <div className="text-sm">
         <MDXRemote source={battleCard.mdText} />
       </div>

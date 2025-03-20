@@ -5,7 +5,6 @@ export type ArmyListSummary = Pick<ArmyList, 'id' | 'name' | 'keywords'> & {
   derivedData: Prisma.$armylistsPayload['composites']['derivedData']['scalars'];
 };
 
-export type ArmylistsTroopEntriesForGeneral =
-  Prisma.$ArmylistsTroopEntriesForGeneralPayload['scalars'] & {
-    troopEntries: Prisma.$ArmylistsTroopEntriesForGeneralTroopEntriesPayload['scalars'][];
-  };
+export type ArmylistsTroopEntriesForGeneral = Prisma.$TroopEntriesForGeneralPayload['scalars'] & {
+  troopEntries: Prisma.$TroopEntryPayload['scalars'][];
+};
