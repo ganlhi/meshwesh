@@ -29,11 +29,14 @@ export default async function ArmyListPage({
     <>
       <article className="container mt-4 space-y-2.5 py-4">
         <h1>{armyList.name}</h1>
-        <h2>
-          {formatDate(armyList.derivedData.listStartDate)} to{' '}
-          {formatDate(armyList.derivedData.listEndDate)}
-        </h2>
-        <dl>
+        {armyList.dateRanges.map((dr) => (
+          <h3 key={dr.id} className="font-normal text-gray-500">
+            {formatDate(dr.startDate)}
+            {dr.endDate !== dr.startDate && <> to </>}
+            {formatDate(dr.endDate)}
+          </h3>
+        ))}
+        <dl className="text-lg font-bold [&_dd]:pl-4 [&_dt]:mt-3 [&_span]:text-base [&_span]:font-normal">
           <dt>Invasion Rating</dt>
           {armyList.invasionRatings.map((ir, i) => (
             <dd key={i}>
@@ -52,29 +55,33 @@ export default async function ArmyListPage({
               {ht.note && <span>{ht.note}:</span>} {ht.values.join(', ')}
             </dd>
           ))}
+          <dt>General&apos;s Troop Type</dt>
+          {armyList.troopEntriesForGeneral.map((troopEntry, i) => (
+            <dd key={troopEntry.id}>
+              {armyList.troopEntriesForGeneral.length > 1 && i === 0 && (
+                <span className="inline-block min-w-20">If Present </span>
+              )}
+              {armyList.troopEntriesForGeneral.length > 1 && i > 0 && (
+                <span className="inline-block min-w-20">Otherwise </span>
+              )}
+              <GeneralTroopEntry troopEntry={troopEntry} />
+            </dd>
+          ))}
+          <dt>Army Battle Cards</dt>
+          {armyList.battleCardEntries.length === 0 && <dd>None</dd>}
+          {armyList.battleCardEntries.map((battleCardEntry) => (
+            <dd key={battleCardEntry.id}>
+              <BattleCardMinMax min={battleCardEntry.min} max={battleCardEntry.max} />
+              <BattleCardEntry code={battleCardEntry.battleCardCode} />
+              {battleCardEntry.note && (
+                <>
+                  {' '}
+                  <span>{battleCardEntry.note}</span>
+                </>
+              )}
+            </dd>
+          ))}
         </dl>
-        <dt>General&apos;s Troop Type</dt>
-        {armyList.troopEntriesForGeneral.map((troopEntry, i) => (
-          <dd key={troopEntry.id}>
-            {armyList.troopEntriesForGeneral.length > 1 && i === 0 && <span>If Present</span>}
-            {armyList.troopEntriesForGeneral.length > 1 && i > 0 && <span>Otherwise</span>}
-            <GeneralTroopEntry troopEntry={troopEntry} />
-          </dd>
-        ))}
-        <dt>Army Battle Cards</dt>
-        {armyList.battleCardEntries.length === 0 && <dd>None</dd>}
-        {armyList.battleCardEntries.map((battleCardEntry) => (
-          <dd key={battleCardEntry.id}>
-            <BattleCardMinMax min={battleCardEntry.min} max={battleCardEntry.max} />
-            <BattleCardEntry code={battleCardEntry.battleCardCode} />
-            {battleCardEntry.note && (
-              <>
-                {' '}
-                <span>{battleCardEntry.note}</span>
-              </>
-            )}
-          </dd>
-        ))}
       </article>
       {battleCard && (
         <NavModal title={battleCard.displayName} backUrl={`/army-lists/${id}`}>
