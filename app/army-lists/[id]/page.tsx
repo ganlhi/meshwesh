@@ -10,6 +10,7 @@ import { getSingleStringFromSearchParams, SearchParams } from '@/lib/routing';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { NavModal } from '@/app/components/NavModal';
 import { ArmyListSizeSelect } from '@/app/components/ArmyListSizeSelect';
+import { ToggleTitle } from '@/app/components/ToggleTitle';
 
 export default async function ArmyListPage({
   params,
@@ -91,6 +92,11 @@ export default async function ArmyListPage({
           <label htmlFor="army-size">Showing troop options for:</label>
           <ArmyListSizeSelect armySize={armySize} />
         </div>
+
+        <ToggleTitle title="Required Troops">
+          These troops are part of the main army. The minimum and maximum always apply unless
+          overridden by the restrictions.
+        </ToggleTitle>
       </article>
       {battleCard && (
         <NavModal title={battleCard.displayName} backUrl={`/army-lists/${id}`}>
