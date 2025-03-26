@@ -1,7 +1,7 @@
 import { getArmyList } from '@/lib/army-lists';
 import { notFound } from 'next/navigation';
 import { formatDate } from '@/lib/format';
-import { ArmylistsTroopEntriesForGeneral } from '@/app/army-lists/types';
+import { ArmyListSize, ArmylistsTroopEntriesForGeneral } from '@/app/army-lists/types';
 import { getTroopTypesByCodes } from '@/lib/troop-types';
 import { Fragment } from 'react';
 import { getBattleCard, getBattleCardByCode } from '@/lib/battle-cards';
@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { getSingleStringFromSearchParams, SearchParams } from '@/lib/routing';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { NavModal } from '@/app/components/NavModal';
+import { ArmyListSizeSelect } from '@/app/components/ArmyListSizeSelect';
 
 export default async function ArmyListPage({
   params,
@@ -24,6 +25,8 @@ export default async function ArmyListPage({
 
   const displayedBattleCard = await getSingleStringFromSearchParams(searchParams, 'battle-card');
   const battleCard = displayedBattleCard ? await getBattleCard(displayedBattleCard) : undefined;
+
+  const armySize = await getArmySizeFromSearchParams(searchParams);
 
   return (
     <>
@@ -82,6 +85,12 @@ export default async function ArmyListPage({
             </dd>
           ))}
         </dl>
+
+        <h2>Troop Options</h2>
+        <div className="flex flex-col items-start gap-2">
+          <label htmlFor="army-size">Showing troop options for:</label>
+          <ArmyListSizeSelect armySize={armySize} />
+        </div>
       </article>
       {battleCard && (
         <NavModal title={battleCard.displayName} backUrl={`/army-lists/${id}`}>
@@ -136,4 +145,19 @@ function BattleCardMinMax({ min, max }: { min?: number | null; max?: number | nu
       </span>{' '}
     </>
   );
+}
+
+async function getArmySizeFromSearchParams(
+  searchParams: Promise<SearchParams>,
+): Promise<ArmyListSize> {
+  const param = await getSingleStringFromSearchParams(searchParams, 'army-size');
+  switch (param) {
+    case 'grand-three':
+    case 'grand-two':
+    case 'grand-one':
+    case 'grand-ally':
+      return param;
+    default:
+      return 'standard';
+  }
 }

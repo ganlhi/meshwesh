@@ -8,3 +8,5 @@ export type ArmyListSummary = Pick<ArmyList, 'id' | 'name' | 'keywords'> & {
 export type ArmylistsTroopEntriesForGeneral = Prisma.$TroopEntriesForGeneralPayload['scalars'] & {
   troopEntries: Prisma.$TroopEntryPayload['scalars'][];
 };
+
+export type ArmyListSize = 'standard' | 'grand-three' | 'grand-two' | 'grand-one' | 'grand-ally';
