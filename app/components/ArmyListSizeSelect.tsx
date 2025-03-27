@@ -10,7 +10,7 @@ export function ArmyListSizeSelect({ armySize }: { armySize: ArmyListSize }) {
       id="army-size"
       value={armySize}
       onChange={(e) => {
-        push(`?army-size=${e.target.value}`);
+        push(`?army-size=${e.target.value}`, { scroll: false });
       }}
       className="rounded-sm border border-gray-300 p-2"
     >

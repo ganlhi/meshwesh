@@ -7,7 +7,7 @@ export function ToggleTitle({ title, children }: PropsWithChildren<{ title: stri
   return (
     <>
       <h3
-        className="peer cursor-pointer text-primary"
+        className="peer mt-5 cursor-pointer text-primary"
         data-open={open}
         onClick={() => {
           setOpen((o) => !o);

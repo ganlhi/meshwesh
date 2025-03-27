@@ -12,7 +12,7 @@ export function NavModal({
   const { push } = useRouter();
 
   return (
-    <Modal open onOpenChange={() => push(backUrl)} title={title}>
+    <Modal open onOpenChange={() => push(backUrl, { scroll: false })} title={title}>
       {children}
     </Modal>
   );

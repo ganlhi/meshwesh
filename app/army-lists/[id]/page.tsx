@@ -1,16 +1,17 @@
 import { getArmyList } from '@/lib/army-lists';
 import { notFound } from 'next/navigation';
-import { formatDate } from '@/lib/format';
+import { formatDateRange } from '@/lib/format';
 import { ArmyListSize, ArmylistsTroopEntriesForGeneral } from '@/app/army-lists/types';
 import { getTroopTypesByCodes } from '@/lib/troop-types';
 import { Fragment } from 'react';
-import { getBattleCard, getBattleCardByCode } from '@/lib/battle-cards';
-import Link from 'next/link';
-import { getSingleStringFromSearchParams, SearchParams } from '@/lib/routing';
+import { getBattleCard } from '@/lib/battle-cards';
+import { getSingleStringFromSearchParams, SearchParams, updateQueryString } from '@/lib/routing';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { NavModal } from '@/app/components/NavModal';
 import { ArmyListSizeSelect } from '@/app/components/ArmyListSizeSelect';
 import { ToggleTitle } from '@/app/components/ToggleTitle';
+import { TroopsTable } from '@/app/components/TroopsTable';
+import { BattleCardLink } from '@/app/components/BattleCardLink';
 
 export default async function ArmyListPage({
   params,
@@ -35,9 +36,7 @@ export default async function ArmyListPage({
         <h1>{armyList.name}</h1>
         {armyList.dateRanges.map((dr) => (
           <h3 key={dr.id} className="font-normal text-gray-500">
-            {formatDate(dr.startDate)}
-            {dr.endDate !== dr.startDate && <> to </>}
-            {formatDate(dr.endDate)}
+            {formatDateRange(dr.startDate, dr.endDate)}
           </h3>
         ))}
         <dl className="text-lg font-bold [&_dd]:pl-4 [&_dt]:mt-3 [&_span]:text-base [&_span]:font-normal">
@@ -76,13 +75,11 @@ export default async function ArmyListPage({
           {armyList.battleCardEntries.map((battleCardEntry) => (
             <dd key={battleCardEntry.id}>
               <BattleCardMinMax min={battleCardEntry.min} max={battleCardEntry.max} />
-              <BattleCardEntry code={battleCardEntry.battleCardCode} />
-              {battleCardEntry.note && (
-                <>
-                  {' '}
-                  <span>{battleCardEntry.note}</span>
-                </>
-              )}
+              <BattleCardLink
+                code={battleCardEntry.battleCardCode}
+                note={battleCardEntry.note}
+                currentSearchParams={searchParams}
+              />
             </dd>
           ))}
         </dl>
@@ -97,9 +94,17 @@ export default async function ArmyListPage({
           These troops are part of the main army. The minimum and maximum always apply unless
           overridden by the restrictions.
         </ToggleTitle>
+        <TroopsTable
+          troops={armyList.troopOptions}
+          armySize={armySize}
+          currentSearchParams={searchParams}
+        />
       </article>
       {battleCard && (
-        <NavModal title={battleCard.displayName} backUrl={`/army-lists/${id}`}>
+        <NavModal
+          title={battleCard.displayName}
+          backUrl={`?${await updateQueryString(searchParams, { 'battle-card': undefined })}`}
+        >
           <div className="text-sm">
             <MDXRemote source={battleCard.mdText} />
           </div>
@@ -133,13 +138,6 @@ async function GeneralTroopEntry({ troopEntry }: { troopEntry: ArmylistsTroopEnt
       ))}
     </>
   );
-}
-
-async function BattleCardEntry({ code }: { code: string }) {
-  const battleCard = await getBattleCardByCode(code);
-  if (!battleCard) return <>{code}</>;
-
-  return <Link href={`?battle-card=${battleCard.id}`}>{battleCard.displayName}</Link>;
 }
 
 function BattleCardMinMax({ min, max }: { min?: number | null; max?: number | null }) {
