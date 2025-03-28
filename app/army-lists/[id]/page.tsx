@@ -1,4 +1,4 @@
-import { getArmyList } from '@/lib/army-lists';
+import { getArmyList, separateOptionalContingentsFromAllies } from '@/lib/army-lists';
 import { notFound } from 'next/navigation';
 import { formatDateRange } from '@/lib/format';
 import { ArmyListSize, ArmylistsTroopEntriesForGeneral } from '@/app/army-lists/types';
@@ -29,6 +29,10 @@ export default async function ArmyListPage({
   const battleCard = displayedBattleCard ? await getBattleCard(displayedBattleCard) : undefined;
 
   const armySize = await getArmySizeFromSearchParams(searchParams);
+
+  const { optionalContingents, allyOptions } = await separateOptionalContingentsFromAllies(
+    armyList.allyOptions,
+  );
 
   return (
     <>
@@ -99,6 +103,35 @@ export default async function ArmyListPage({
           armySize={armySize}
           currentSearchParams={searchParams}
         />
+
+        <ToggleTitle title="Optional Contingents">
+          These troops are part of the main army but are in an optional contingent. The minimum and
+          maximum only apply if the contingent is selected. In the cases where there is more than
+          one optional contingent, the player may select any or all of the optional contingents.
+        </ToggleTitle>
+        {optionalContingents.map((optionalContingent) => (
+          <div key={optionalContingent.id} className="rounded border border-gray-300">
+            <header className="border-b border-inherit bg-gray-100 p-3">
+              <h6 className="m-0">{optionalContingent.name}</h6>
+              {optionalContingent.dateRange && (
+                <p className="text-sm text-gray-500">
+                  {formatDateRange(
+                    optionalContingent.dateRange.startDate,
+                    optionalContingent.dateRange.endDate,
+                  )}
+                </p>
+              )}
+            </header>
+            <div className="p-3">
+              <TroopsTable
+                troops={optionalContingent.troopOptions}
+                armySize={armySize}
+                currentSearchParams={searchParams}
+                hideBattleCards
+              />
+            </div>
+          </div>
+        ))}
       </article>
       {battleCard && (
         <NavModal

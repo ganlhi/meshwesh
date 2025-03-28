@@ -1,4 +1,4 @@
-import { Prisma, TroopOptions } from '@prisma/client';
+import { AllyOptions, Prisma, TroopOptions } from '@prisma/client';
 
 export type ArmyList = Prisma.$armylistsPayload['scalars'];
 export type ArmyListSummary = Pick<ArmyList, 'id' | 'name' | 'keywords'> & {
@@ -11,4 +11,4 @@ export type ArmylistsTroopEntriesForGeneral = Prisma.$TroopEntriesForGeneralPayl
 
 export type ArmyListSize = 'standard' | 'grand-three' | 'grand-two' | 'grand-one' | 'grand-ally';
 
-export type { TroopOptions };
+export type { AllyOptions, TroopOptions };

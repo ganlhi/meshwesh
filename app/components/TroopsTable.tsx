@@ -8,10 +8,16 @@ import { SearchParams } from '@/lib/routing';
 type TroopsTableProps = {
   troops: TroopOptions[];
   armySize: ArmyListSize;
+  hideBattleCards?: boolean;
   currentSearchParams: Promise<SearchParams>;
 };
 
-export function TroopsTable({ troops, armySize, currentSearchParams }: TroopsTableProps) {
+export function TroopsTable({
+  troops,
+  armySize,
+  hideBattleCards,
+  currentSearchParams,
+}: TroopsTableProps) {
   let sizeMult = 1;
   if (armySize === 'grand-two') sizeMult = 2;
   if (armySize === 'grand-three') sizeMult = 3;
@@ -21,12 +27,12 @@ export function TroopsTable({ troops, armySize, currentSearchParams }: TroopsTab
     <table className="w-full text-sm [&_td]:p-2 [&_td]:align-top [&_th]:p-2">
       <thead className="text-left">
         <tr className="border-y-2 border-gray-300 [&>th]:py-2">
-          <th>Troop Types</th>
-          <th className="text-center">Min</th>
-          <th className="text-center">Max</th>
-          <th className="text-center">Battle Line</th>
+          <th className="w-60">Troop Types</th>
+          <th className="w-16 text-center">Min</th>
+          <th className="w-16 text-center">Max</th>
+          <th className="w-32 text-center">Battle Line</th>
           <th>Restrictions</th>
-          <th>Battle Cards</th>
+          {!hideBattleCards && <th>Battle Cards</th>}
         </tr>
       </thead>
       <tbody className="">
@@ -46,16 +52,18 @@ export function TroopsTable({ troops, armySize, currentSearchParams }: TroopsTab
               ))}
               {troop.note && <div>{troop.note}</div>}
             </td>
-            <td>
-              {troop.battleCardEntries.map((battleCardEntry) => (
-                <BattleCardLink
-                  key={battleCardEntry.id}
-                  code={battleCardEntry.battleCardCode}
-                  note={battleCardEntry.note}
-                  currentSearchParams={currentSearchParams}
-                />
-              ))}
-            </td>
+            {!hideBattleCards && (
+              <td>
+                {troop.battleCardEntries.map((battleCardEntry) => (
+                  <BattleCardLink
+                    key={battleCardEntry.id}
+                    code={battleCardEntry.battleCardCode}
+                    note={battleCardEntry.note}
+                    currentSearchParams={currentSearchParams}
+                  />
+                ))}
+              </td>
+            )}
           </tr>
         ))}
       </tbody>
