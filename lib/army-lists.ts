@@ -110,3 +110,19 @@ export async function separateOptionalContingentsFromAllies(allyOptions: AllyOpt
 
   return results;
 }
+
+export async function getEnemyArmyLists(id: string) {
+  const xrefs = await prisma.enemyxrefs.findMany({
+    where: { OR: [{ armyList1: id }, { armyList2: id }] },
+  });
+
+  const ids = xrefs.map((x) => {
+    if (x.armyList1 !== id) return x.armyList1;
+    return x.armyList2;
+  });
+
+  return prisma.armylists.findMany({
+    where: { id: { in: ids } },
+    orderBy: { name: 'asc' },
+  });
+}

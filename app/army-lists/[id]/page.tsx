@@ -1,4 +1,8 @@
-import { getArmyList, separateOptionalContingentsFromAllies } from '@/lib/army-lists';
+import {
+  getArmyList,
+  getEnemyArmyLists,
+  separateOptionalContingentsFromAllies,
+} from '@/lib/army-lists';
 import { notFound } from 'next/navigation';
 import { formatDateRange } from '@/lib/format';
 import { ArmyListSize, ArmylistsTroopEntriesForGeneral } from '@/app/army-lists/types';
@@ -36,9 +40,11 @@ export default async function ArmyListPage({
     armyList.allyOptions,
   );
 
+  const enemyArmyLists = await getEnemyArmyLists(id);
+
   return (
     <>
-      <article className="container mt-4 space-y-2.5 py-4">
+      <article className="container mt-4 space-y-2.5 py-4 [&>h2]:mt-8">
         <h1>{armyList.name}</h1>
         {armyList.dateRanges.map((dr) => (
           <h3 key={dr.id} className="font-normal text-gray-500">
@@ -182,6 +188,18 @@ export default async function ArmyListPage({
             ))}
           </ToggleCard>
         ))}
+
+        <h2>Enemies</h2>
+        <ul className="space-y-1.5">
+          {enemyArmyLists.map((list) => (
+            <li key={list.id} className="text-xl">
+              <Link href={`/army-lists/${list.id}`}>
+                {list.name}{' '}
+                {formatDateRange(list.derivedData.listStartDate, list.derivedData.listEndDate)}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </article>
       {battleCard && (
         <NavModal
