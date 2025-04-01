@@ -12,6 +12,8 @@ import { ArmyListSizeSelect } from '@/app/components/ArmyListSizeSelect';
 import { ToggleTitle } from '@/app/components/ToggleTitle';
 import { TroopsTable } from '@/app/components/TroopsTable';
 import { BattleCardLink } from '@/app/components/BattleCardLink';
+import { ToggleCard } from '@/app/components/ToggleCard';
+import Link from 'next/link';
 
 export default async function ArmyListPage({
   params,
@@ -110,27 +112,75 @@ export default async function ArmyListPage({
           one optional contingent, the player may select any or all of the optional contingents.
         </ToggleTitle>
         {optionalContingents.map((optionalContingent) => (
-          <div key={optionalContingent.id} className="rounded border border-gray-300">
-            <header className="border-b border-inherit bg-gray-100 p-3">
-              <h6 className="m-0">{optionalContingent.name}</h6>
-              {optionalContingent.dateRange && (
-                <p className="text-sm text-gray-500">
-                  {formatDateRange(
-                    optionalContingent.dateRange.startDate,
-                    optionalContingent.dateRange.endDate,
+          <ToggleCard
+            key={optionalContingent.id}
+            alwaysOpen
+            header={
+              <>
+                <h5 className="m-0">{optionalContingent.name}</h5>
+                {optionalContingent.dateRange && (
+                  <p className="text-sm text-gray-500">
+                    {formatDateRange(
+                      optionalContingent.dateRange.startDate,
+                      optionalContingent.dateRange.endDate,
+                    )}
+                  </p>
+                )}
+              </>
+            }
+          >
+            <TroopsTable
+              troops={optionalContingent.troopOptions}
+              armySize={armySize}
+              currentSearchParams={searchParams}
+              hideBattleCards
+            />
+          </ToggleCard>
+        ))}
+
+        <ToggleTitle title="Ally Troop Options">
+          These troops are not part of the main army. The minimum and maximum only apply if the ally
+          option is selected. No more than one ally option may be selected. Most ally options only
+          include one allied contingent. Some ally options include two allied contingents.
+        </ToggleTitle>
+        {allyOptions.map((allyOption, index) => (
+          <ToggleCard
+            key={allyOption.id}
+            header={
+              <>
+                <h5 className="m-0">
+                  Option {index + 1}: {allyOption.allyEntries.map((e) => e.name).join(' and ')}
+                </h5>
+                {allyOption.dateRange && (
+                  <p className="text-sm text-gray-500">
+                    {formatDateRange(allyOption.dateRange.startDate, allyOption.dateRange.endDate)}
+                  </p>
+                )}
+              </>
+            }
+          >
+            {allyOption.allyEntries.map((allyEntry) => (
+              <Fragment key={allyEntry.id}>
+                {allyOption.allyEntries.length > 1 && <h6>Allied Contingent: {allyEntry.name}</h6>}
+                <TroopsTable
+                  troops={allyEntry.troopOptions}
+                  armySize={armySize}
+                  currentSearchParams={searchParams}
+                  hideBattleCards
+                />
+                <p className="mt-3 px-2 text-sm">
+                  Full Army List:{' '}
+                  {allyEntry.fullArmyList ? (
+                    <Link href={`/army-lists/${allyEntry.fullArmyList.id}`}>
+                      {allyEntry.fullArmyList.name}
+                    </Link>
+                  ) : (
+                    'not available'
                   )}
                 </p>
-              )}
-            </header>
-            <div className="p-3">
-              <TroopsTable
-                troops={optionalContingent.troopOptions}
-                armySize={armySize}
-                currentSearchParams={searchParams}
-                hideBattleCards
-              />
-            </div>
-          </div>
+              </Fragment>
+            ))}
+          </ToggleCard>
         ))}
       </article>
       {battleCard && (

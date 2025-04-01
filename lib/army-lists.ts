@@ -38,10 +38,11 @@ export async function separateOptionalContingentsFromAllies(allyOptions: AllyOpt
       troopOptions: TroopOptions[];
     }>;
     allyOptions: Array<{
+      id: string;
       dateRange: AllyOptions['dateRange'];
       allyEntries: Array<
         AllyOptions['allyEntries'][number] & {
-          armyListId: string | null;
+          fullArmyList: { id: string; name: string } | null;
           troopOptions: TroopOptions[];
         }
       >;
@@ -55,8 +56,19 @@ export async function separateOptionalContingentsFromAllies(allyOptions: AllyOpt
     const allyOptionArmyLists = await prisma.allyarmylists.findMany({
       where: { id: { in: allyOption.allyEntries.map((e) => e.allyArmyList) } },
     });
+    const allyOptionFullArmyLists = await prisma.armylists.findMany({
+      where: {
+        id: {
+          in: allyOptionArmyLists.reduce<string[]>(
+            (acc, a) => (a.armyListId ? [...acc, a.armyListId] : acc),
+            [],
+          ),
+        },
+      },
+    });
 
     const allyOptionResult: (typeof results)['allyOptions'][number] = {
+      id: allyOption.id,
       dateRange: allyOption.dateRange,
       allyEntries: [],
     };
@@ -79,9 +91,13 @@ export async function separateOptionalContingentsFromAllies(allyOptions: AllyOpt
 
         isContingent = true;
       } else {
+        const armyList = allyOptionFullArmyLists.find(
+          (a) => a.id === allyOptionArmyList.armyListId,
+        );
+
         allyOptionResult.allyEntries.push({
           ...allyOptionEntry,
-          armyListId: allyOptionArmyList.armyListId,
+          fullArmyList: armyList ? { id: armyList.id, name: armyList.name } : null,
           troopOptions: allyOptionArmyList.troopOptions,
         });
       }
