@@ -126,3 +126,25 @@ export async function getEnemyArmyLists(id: string) {
     orderBy: { name: 'asc' },
   });
 }
+
+export async function getRelatedArmyLists(id: string, listId: number) {
+  return prisma.armylists.findMany({
+    where: { id: { not: id }, listId: listId },
+    orderBy: { name: 'asc' },
+  });
+}
+
+export async function getThematicCategories(id: string) {
+  const xrefs = await prisma.thematiccategorytoarmylistxrefs.findMany({
+    where: { armyList: id },
+  });
+
+  const ids = xrefs.map((x) => {
+    return x.thematicCategory;
+  });
+
+  return prisma.thematiccategories.findMany({
+    where: { id: { in: ids } },
+    orderBy: { name: 'asc' },
+  });
+}

@@ -1,6 +1,8 @@
 import {
   getArmyList,
   getEnemyArmyLists,
+  getRelatedArmyLists,
+  getThematicCategories,
   separateOptionalContingentsFromAllies,
 } from '@/lib/army-lists';
 import { notFound } from 'next/navigation';
@@ -41,6 +43,8 @@ export default async function ArmyListPage({
   );
 
   const enemyArmyLists = await getEnemyArmyLists(id);
+  const relatedArmyLists = await getRelatedArmyLists(id, armyList.listId);
+  const thematicCategories = await getThematicCategories(id);
 
   return (
     <>
@@ -190,16 +194,49 @@ export default async function ArmyListPage({
         ))}
 
         <h2>Enemies</h2>
-        <ul className="space-y-1.5">
-          {enemyArmyLists.map((list) => (
-            <li key={list.id} className="text-xl">
-              <Link href={`/army-lists/${list.id}`}>
-                {list.name}{' '}
-                {formatDateRange(list.derivedData.listStartDate, list.derivedData.listEndDate)}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {enemyArmyLists.length > 0 ? (
+          <ul className="space-y-1.5">
+            {enemyArmyLists.map((list) => (
+              <li key={list.id} className="text-xl">
+                <Link href={`/army-lists/${list.id}`}>
+                  {list.name}{' '}
+                  {formatDateRange(list.derivedData.listStartDate, list.derivedData.listEndDate)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm italic">No enemies found</p>
+        )}
+
+        <h2>Related Army Lists</h2>
+        {relatedArmyLists.length > 0 ? (
+          <ul className="space-y-1.5">
+            {relatedArmyLists.map((list) => (
+              <li key={list.id} className="text-xl">
+                <Link href={`/army-lists/${list.id}`}>
+                  {list.name}{' '}
+                  {formatDateRange(list.derivedData.listStartDate, list.derivedData.listEndDate)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm italic">No related army lists found</p>
+        )}
+
+        <h2>Thematic Categories</h2>
+        {thematicCategories.length > 0 ? (
+          <ul className="space-y-1.5">
+            {thematicCategories.map((cat) => (
+              <li key={cat.id} className="text-xl">
+                <Link href={`/categories/${cat.id}`}>{cat.name}</Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm italic">No thematic categories found</p>
+        )}
       </article>
       {battleCard && (
         <NavModal
