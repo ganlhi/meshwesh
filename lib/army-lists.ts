@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { ArmyList, ArmyListSummary } from '@/app/army-lists/types';
+import { ArmyListSummary } from '@/app/army-lists/types';
 import { AllyOptions, TroopOptions } from '@prisma/client';
 
 export function getArmyListsCount() {
