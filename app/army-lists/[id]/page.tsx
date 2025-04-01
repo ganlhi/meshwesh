@@ -121,6 +121,9 @@ export default async function ArmyListPage({
           maximum only apply if the contingent is selected. In the cases where there is more than
           one optional contingent, the player may select any or all of the optional contingents.
         </ToggleTitle>
+        {optionalContingents.length === 0 && (
+          <p className="text-sm italic">No optional contingents available</p>
+        )}
         {optionalContingents.map((optionalContingent) => (
           <ToggleCard
             key={optionalContingent.id}
