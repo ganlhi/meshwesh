@@ -31,7 +31,6 @@ export default async function ArmyListPage({
   const { id } = await params;
   const armyList = await getArmyList(id);
   if (!armyList) return notFound();
-  console.log(armyList);
 
   const displayedBattleCard = await getSingleStringFromSearchParams(searchParams, 'battle-card');
   const battleCard = displayedBattleCard ? await getBattleCard(displayedBattleCard) : undefined;
