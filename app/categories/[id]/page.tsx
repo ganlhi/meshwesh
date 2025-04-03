@@ -1,8 +1,18 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getCategoryWithLists } from '@/lib/categories';
+import { getCategories, getCategoryWithLists } from '@/lib/categories';
 
-export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
+type CategoryPageParams = { id: string };
+
+export const revalidate = 300;
+export const dynamicParams = false;
+
+export async function generateStaticParams(): Promise<CategoryPageParams[]> {
+  const categories = await getCategories();
+  return categories.map((c) => ({ id: c.id }));
+}
+
+export default async function CategoryPage({ params }: { params: Promise<CategoryPageParams> }) {
   const { id } = await params;
 
   const data = await getCategoryWithLists(id);

@@ -1,5 +1,6 @@
 import {
   getArmyList,
+  getArmyLists,
   getEnemyArmyLists,
   getRelatedArmyLists,
   getThematicCategories,
@@ -20,6 +21,16 @@ import { TroopsTable } from '@/app/components/TroopsTable';
 import { BattleCardLink } from '@/app/components/BattleCardLink';
 import { ToggleCard } from '@/app/components/ToggleCard';
 import Link from 'next/link';
+
+type ArmyListPageParams = { id: string };
+
+export const revalidate = 300;
+export const dynamicParams = false;
+
+export async function generateStaticParams(): Promise<ArmyListPageParams[]> {
+  const armyLists = await getArmyLists();
+  return armyLists.map((a) => ({ id: a.id }));
+}
 
 export default async function ArmyListPage({
   params,

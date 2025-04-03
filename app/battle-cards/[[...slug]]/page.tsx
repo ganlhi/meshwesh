@@ -1,21 +1,30 @@
-import SampleBattleCard from '@/app/images/sample-battle-card.png';
-import Image from 'next/image';
 import { getBattleCards } from '@/lib/battle-cards';
 import Link from 'next/link';
-import { getSingleStringFromSearchParams, SearchParams, updateQueryString } from '@/lib/routing';
+import Image from 'next/image';
+import SampleBattleCard from '@/app/images/sample-battle-card.png';
 import { NavModal } from '@/app/components/NavModal';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 
+type BattleCardsPageParams = { slug?: string[] };
+
+export const revalidate = 300;
+export const dynamicParams = false;
+
+export async function generateStaticParams(): Promise<BattleCardsPageParams[]> {
+  const battleCards = await getBattleCards();
+  return [{ slug: undefined }, ...battleCards.map((bc) => ({ slug: [bc.id] }))];
+}
+
 export default async function BattleCardsPage({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<SearchParams>;
+  params: Promise<BattleCardsPageParams>;
 }) {
   const battleCards = await getBattleCards();
 
-  const displayedBattleCard = await getSingleStringFromSearchParams(searchParams, 'battle-card');
-  const battleCard = displayedBattleCard
-    ? battleCards.find((b) => b.id === displayedBattleCard)
+  const displayedBattleCardId = (await params).slug?.[0];
+  const displayedBattleCard = displayedBattleCardId
+    ? battleCards.find((b) => b.id === displayedBattleCardId)
     : undefined;
 
   return (
@@ -33,13 +42,7 @@ export default async function BattleCardsPage({
             <ul className="space-y-2.5">
               {battleCards.map(async (battleCard) => (
                 <li key={battleCard.id} className="text-2xl">
-                  <Link
-                    href={`?${await updateQueryString(searchParams, {
-                      'battle-card': battleCard.id,
-                    })}`}
-                  >
-                    {battleCard.displayName}
-                  </Link>
+                  <Link href={`/battle-cards/${battleCard.id}`}>{battleCard.displayName}</Link>
                 </li>
               ))}
             </ul>
@@ -52,13 +55,10 @@ export default async function BattleCardsPage({
           />
         </div>
       </article>
-      {battleCard && (
-        <NavModal
-          title={battleCard.displayName}
-          backUrl={`?${await updateQueryString(searchParams, { 'battle-card': undefined })}`}
-        >
+      {displayedBattleCard && (
+        <NavModal title={displayedBattleCard.displayName} backUrl={`/battle-cards`}>
           <div className="text-sm">
-            <MDXRemote source={battleCard.mdText} />
+            <MDXRemote source={displayedBattleCard.mdText} />
           </div>
         </NavModal>
       )}
