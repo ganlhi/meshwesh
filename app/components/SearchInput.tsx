@@ -1,6 +1,6 @@
 'use client';
 
-import { ArmyListSummary } from '@/app/army-lists/types';
+import { ArmyListSummary } from '@/lib/army-lists';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 

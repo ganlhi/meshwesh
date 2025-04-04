@@ -1,15 +1,21 @@
 'use client';
 
-import { ArmyListSize } from '@/app/army-lists/types';
-import { useRouter } from 'next/navigation';
+import { ArmyListSize, getArmySizeFromSearchParams } from '@/lib/army-lists';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
-export function ArmyListSizeSelect({ armySize }: { armySize: ArmyListSize }) {
+export function ArmyListSizeSelect() {
   const { push } = useRouter();
+  const searchParams = useSearchParams();
+  const armySizeParam = getArmySizeFromSearchParams(searchParams);
+  const [armySize, setArmySize] = useState(armySizeParam);
+
   return (
     <select
       id="army-size"
       value={armySize}
       onChange={(e) => {
+        setArmySize(e.target.value as ArmyListSize);
         push(`?army-size=${e.target.value}`, { scroll: false });
       }}
       className="rounded-sm border border-gray-300 p-2"

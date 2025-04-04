@@ -1,4 +1,5 @@
 import {
+  ArmylistsTroopEntriesForGeneral,
   getArmyList,
   getArmyLists,
   getEnemyArmyLists,
@@ -8,19 +9,14 @@ import {
 } from '@/lib/army-lists';
 import { notFound } from 'next/navigation';
 import { formatDateRange } from '@/lib/format';
-import { ArmyListSize, ArmylistsTroopEntriesForGeneral } from '@/app/army-lists/types';
 import { getTroopTypesByCodes } from '@/lib/troop-types';
-import { Fragment } from 'react';
-import { getBattleCard } from '@/lib/battle-cards';
-import { getSingleStringFromSearchParams, SearchParams, updateQueryString } from '@/lib/routing';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import { NavModal } from '@/app/components/NavModal';
+import { Fragment, Suspense } from 'react';
 import { ArmyListSizeSelect } from '@/app/components/ArmyListSizeSelect';
 import { ToggleTitle } from '@/app/components/ToggleTitle';
 import { TroopsTable } from '@/app/components/TroopsTable';
-import { BattleCardLink } from '@/app/components/BattleCardLink';
 import { ToggleCard } from '@/app/components/ToggleCard';
 import Link from 'next/link';
+import { BattleCardButton } from '@/app/components/BattleCardButton';
 
 type ArmyListPageParams = { id: string };
 
@@ -32,21 +28,10 @@ export async function generateStaticParams(): Promise<ArmyListPageParams[]> {
   return armyLists.map((a) => ({ id: a.id }));
 }
 
-export default async function ArmyListPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<SearchParams>;
-}) {
+export default async function ArmyListPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const armyList = await getArmyList(id);
   if (!armyList) return notFound();
-
-  const displayedBattleCard = await getSingleStringFromSearchParams(searchParams, 'battle-card');
-  const battleCard = displayedBattleCard ? await getBattleCard(displayedBattleCard) : undefined;
-
-  const armySize = await getArmySizeFromSearchParams(searchParams);
 
   const { optionalContingents, allyOptions } = await separateOptionalContingentsFromAllies(
     armyList.allyOptions,
@@ -101,11 +86,7 @@ export default async function ArmyListPage({
           {armyList.battleCardEntries.map((battleCardEntry) => (
             <dd key={battleCardEntry.id}>
               <BattleCardMinMax min={battleCardEntry.min} max={battleCardEntry.max} />
-              <BattleCardLink
-                code={battleCardEntry.battleCardCode}
-                note={battleCardEntry.note}
-                currentSearchParams={searchParams}
-              />
+              <BattleCardButton code={battleCardEntry.battleCardCode} note={battleCardEntry.note} />
             </dd>
           ))}
         </dl>
@@ -113,18 +94,16 @@ export default async function ArmyListPage({
         <h2>Troop Options</h2>
         <div className="flex flex-col items-start gap-2">
           <label htmlFor="army-size">Showing troop options for:</label>
-          <ArmyListSizeSelect armySize={armySize} />
+          <Suspense>
+            <ArmyListSizeSelect />
+          </Suspense>
         </div>
 
         <ToggleTitle title="Required Troops">
           These troops are part of the main army. The minimum and maximum always apply unless
           overridden by the restrictions.
         </ToggleTitle>
-        <TroopsTable
-          troops={armyList.troopOptions}
-          armySize={armySize}
-          currentSearchParams={searchParams}
-        />
+        <TroopsTable troops={armyList.troopOptions} />
 
         <ToggleTitle title="Optional Contingents">
           These troops are part of the main army but are in an optional contingent. The minimum and
@@ -152,12 +131,7 @@ export default async function ArmyListPage({
               </>
             }
           >
-            <TroopsTable
-              troops={optionalContingent.troopOptions}
-              armySize={armySize}
-              currentSearchParams={searchParams}
-              hideBattleCards
-            />
+            <TroopsTable troops={optionalContingent.troopOptions} hideBattleCards />
           </ToggleCard>
         ))}
 
@@ -185,12 +159,7 @@ export default async function ArmyListPage({
             {allyOption.allyEntries.map((allyEntry) => (
               <Fragment key={allyEntry.id}>
                 {allyOption.allyEntries.length > 1 && <h6>Allied Contingent: {allyEntry.name}</h6>}
-                <TroopsTable
-                  troops={allyEntry.troopOptions}
-                  armySize={armySize}
-                  currentSearchParams={searchParams}
-                  hideBattleCards
-                />
+                <TroopsTable troops={allyEntry.troopOptions} hideBattleCards />
                 <p className="mt-3 px-2 text-sm">
                   Full Army List:{' '}
                   {allyEntry.fullArmyList ? (
@@ -251,16 +220,6 @@ export default async function ArmyListPage({
           <p className="text-sm italic">No thematic categories found</p>
         )}
       </article>
-      {battleCard && (
-        <NavModal
-          title={battleCard.displayName}
-          backUrl={`?${await updateQueryString(searchParams, { 'battle-card': undefined })}`}
-        >
-          <div className="text-sm">
-            <MDXRemote source={battleCard.mdText} />
-          </div>
-        </NavModal>
-      )}
     </>
   );
 }
@@ -300,19 +259,4 @@ function BattleCardMinMax({ min, max }: { min?: number | null; max?: number | nu
       </span>{' '}
     </>
   );
-}
-
-async function getArmySizeFromSearchParams(
-  searchParams: Promise<SearchParams>,
-): Promise<ArmyListSize> {
-  const param = await getSingleStringFromSearchParams(searchParams, 'army-size');
-  switch (param) {
-    case 'grand-three':
-    case 'grand-two':
-    case 'grand-one':
-    case 'grand-ally':
-      return param;
-    default:
-      return 'standard';
-  }
 }

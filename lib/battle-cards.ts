@@ -8,13 +8,6 @@ export function getBattleCards() {
   return prisma.battlecards.findMany({ orderBy: [{ displayName: 'asc' }] });
 }
 
-export function getBattleCard(id: string) {
-  return prisma.battlecards.findUnique({ where: { id: id } }).catch((e) => {
-    console.error(e);
-    return undefined;
-  });
-}
-
 export function getBattleCardByCode(code: string) {
   return prisma.battlecards
     .findUnique({

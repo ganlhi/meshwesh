@@ -1,27 +1,16 @@
-import { ArmyListSize, TroopOptions } from '@/app/army-lists/types';
+import { TroopOptions } from '@/lib/army-lists';
 import { getTroopTypesByCodes } from '@/lib/troop-types';
-import { Fragment } from 'react';
+import { Fragment, Suspense } from 'react';
 import { formatDateRange } from '@/lib/format';
-import { BattleCardLink } from '@/app/components/BattleCardLink';
-import { SearchParams } from '@/lib/routing';
+import { BattleCardButton } from '@/app/components/BattleCardButton';
+import { TroopSizeCell } from '@/app/components/TroopSizeCell';
 
 type TroopsTableProps = {
   troops: TroopOptions[];
-  armySize: ArmyListSize;
   hideBattleCards?: boolean;
-  currentSearchParams: Promise<SearchParams>;
 };
 
-export function TroopsTable({
-  troops,
-  armySize,
-  hideBattleCards,
-  currentSearchParams,
-}: TroopsTableProps) {
-  let sizeMult = 1;
-  if (armySize === 'grand-two') sizeMult = 2;
-  if (armySize === 'grand-three') sizeMult = 3;
-
+export function TroopsTable({ troops, hideBattleCards }: TroopsTableProps) {
   // TODO mobile version
   return (
     <table className="w-full text-sm [&_td]:p-2 [&_td]:align-top [&_th]:p-2">
@@ -43,8 +32,16 @@ export function TroopsTable({
               <br />
               <span className="italic">{troop.description}</span>
             </td>
-            <td className="text-center">{troop.min * sizeMult}</td>
-            <td className="text-center">{troop.max * sizeMult}</td>
+            <td className="text-center">
+              <Suspense fallback={troop.min}>
+                <TroopSizeCell size={troop.min} />
+              </Suspense>
+            </td>
+            <td className="text-center">
+              <Suspense fallback={troop.max}>
+                <TroopSizeCell size={troop.max} />
+              </Suspense>
+            </td>
             <td className="text-center">{troop.core || '\u2013'}</td>
             <td>
               {troop.dateRanges.map((dr) => (
@@ -55,11 +52,10 @@ export function TroopsTable({
             {!hideBattleCards && (
               <td>
                 {troop.battleCardEntries.map((battleCardEntry) => (
-                  <BattleCardLink
+                  <BattleCardButton
                     key={battleCardEntry.id}
                     code={battleCardEntry.battleCardCode}
                     note={battleCardEntry.note}
-                    currentSearchParams={currentSearchParams}
                   />
                 ))}
               </td>

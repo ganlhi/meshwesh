@@ -1,6 +1,32 @@
 import prisma from '@/lib/prisma';
-import { ArmyListSummary } from '@/app/army-lists/types';
-import { AllyOptions, TroopOptions } from '@prisma/client';
+import { AllyOptions, Prisma, TroopOptions } from '@prisma/client';
+import { ReadonlyURLSearchParams } from 'next/navigation';
+
+export type ArmyList = Prisma.$armylistsPayload['scalars'];
+export type ArmyListSummary = Pick<ArmyList, 'id' | 'name' | 'keywords'> & {
+  derivedData: Prisma.$armylistsPayload['composites']['derivedData']['scalars'];
+};
+
+export type ArmylistsTroopEntriesForGeneral = Prisma.$TroopEntriesForGeneralPayload['scalars'] & {
+  troopEntries: Prisma.$TroopEntryPayload['scalars'][];
+};
+
+export type ArmyListSize = 'standard' | 'grand-three' | 'grand-two' | 'grand-one' | 'grand-ally';
+
+export type { AllyOptions, TroopOptions };
+
+export function getArmySizeFromSearchParams(searchParams: ReadonlyURLSearchParams): ArmyListSize {
+  const param = searchParams.get('army-size');
+  switch (param) {
+    case 'grand-three':
+    case 'grand-two':
+    case 'grand-one':
+    case 'grand-ally':
+      return param;
+    default:
+      return 'standard';
+  }
+}
 
 export function getArmyListsCount() {
   return prisma.armylists.count();
